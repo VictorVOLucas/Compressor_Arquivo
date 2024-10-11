@@ -5,6 +5,7 @@ import imageio  # Biblioteca alternativa para manipulação de vídeos
 from docx import Document
 from io import BytesIO
 import threading
+import time  # Importa a biblioteca de tempo
 
 def compress_image_gui():
     file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg *.png")])
@@ -44,9 +45,9 @@ def compress_video(file_path, output_path):
         writer = imageio.get_writer(output_path, codec='libx264', bitrate='500k')
 
         total_frames = reader.count_frames()
+        start_time = time.time()  # Tempo de início
+        last_minutes = -1  # Inicializa a variável para controle dos minutos
         for i, frame in enumerate(reader):
-            # Opcional: Reduzir a resolução do frame
-            frame = frame[::2, ::2]  # Reduz a resolução pela metade
             writer.append_data(frame)
 
             # Atualiza a barra de progresso a cada frame
@@ -54,6 +55,17 @@ def compress_video(file_path, output_path):
 
             # Atualiza a barra de progresso geral
             overall_progress_bar.set((i + 1) / total_frames)  # Atualiza a barra geral
+
+            # Cálculo do tempo restante
+            elapsed_time = time.time() - start_time  # Tempo gasto até agora
+            estimated_total_time = (elapsed_time / (i + 1)) * total_frames  # Tempo estimado total
+            remaining_time = estimated_total_time - elapsed_time  # Tempo restante
+
+            # Atualiza a mensagem na textbox somente se mudar os minutos
+            remaining_minutes, _ = divmod(remaining_time, 60)
+            if remaining_minutes != last_minutes:  # Verifica se os minutos mudaram
+                last_minutes = remaining_minutes  # Atualiza o último valor de minutos
+                show_remaining_time(remaining_minutes)
 
         writer.close()
         reader.close()
@@ -97,6 +109,11 @@ def compress_word_gui():
         finally:
             progress_bar.stop()  # Para a barra de progresso
 
+def show_remaining_time(minutes):
+    message = f"Tempo restante: {int(minutes)} min"
+    error_textbox.insert("end", message + "\n")
+    error_textbox.see("end")
+
 def show_message(message, success=False):
     if success:
         message = f"✅ {message}"
@@ -117,7 +134,7 @@ title_label = ctk.CTkLabel(root, text="Compressor de Mídia", font=("Arial", 20)
 title_label.pack(pady=10)
 
 # Barra de progresso para frames
-ctk.CTkLabel(root, text="Progresso da Compressão", font=("Arial", 12)).pack(pady=(10, 0))
+ctk.CTkLabel(root, text="Progresso da Compressão do Vídeo", font=("Arial", 12)).pack(pady=(10, 0))
 progress_bar = ctk.CTkProgressBar(root, width=300)
 progress_bar.pack(pady=10)
 progress_bar.set(0)
