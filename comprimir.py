@@ -117,11 +117,13 @@ title_label = ctk.CTkLabel(root, text="Compressor de Mídia", font=("Arial", 20)
 title_label.pack(pady=10)
 
 # Barra de progresso para frames
+ctk.CTkLabel(root, text="Progresso da Compressão", font=("Arial", 12)).pack(pady=(10, 0))
 progress_bar = ctk.CTkProgressBar(root, width=300)
 progress_bar.pack(pady=10)
 progress_bar.set(0)
 
 # Barra de progresso geral
+ctk.CTkLabel(root, text="Progresso Geral", font=("Arial", 12)).pack(pady=(10, 0))
 overall_progress_bar = ctk.CTkProgressBar(root, width=300)
 overall_progress_bar.pack(pady=10)
 overall_progress_bar.set(0)
