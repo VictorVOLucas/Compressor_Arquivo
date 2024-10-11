@@ -110,17 +110,23 @@ def compress_word_gui():
             progress_bar.stop()  # Para a barra de progresso
 
 def show_remaining_time(minutes):
+    # Limpa a linha anterior
+    error_textbox.configure(state="normal")
+    error_textbox.delete("1.0", "end")  # Limpa a textbox
     message = f"Tempo restante: {int(minutes)} min"
-    error_textbox.insert("end", message + "\n")
+    error_textbox.insert("end", message)  # Insere a nova mensagem
     error_textbox.see("end")
+    error_textbox.configure(state="disabled")  # Desabilita a textbox para evitar edições
 
 def show_message(message, success=False):
     if success:
         message = f"✅ {message}"
     else:
         message = f"❌ {message}"
+    error_textbox.configure(state="normal")
     error_textbox.insert("end", message + "\n")
     error_textbox.see("end")
+    error_textbox.configure(state="disabled")  # Desabilita a textbox para evitar edições
 
 # Inicializa o customtkinter
 ctk.set_appearance_mode("dark")
